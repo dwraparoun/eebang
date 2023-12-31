@@ -39,8 +39,11 @@ def _parse_function(
         var = identifiers[0]
 
     for ident in identifiers:
-        # create all symbols, including function variable
+        # create sy.Symbol, including var
         exec(f"{ident} = sy.Symbol('{ident}')")
 
     f = sy.sympify(function)
-    return var, f  # TODO ideally return just f. Somehow var needs to be baked in
+    return (
+        eval(var),  # return var as sy.Symbol rather than string
+        f,
+    )
