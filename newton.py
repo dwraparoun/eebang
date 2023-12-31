@@ -9,8 +9,11 @@ parser.add_argument(
     type=str,
     help="single variable function, e.g. 'x**3-7+sin(x)-1/exp(4*x)'",
 )
-parser.add_argument("--guess", "-g", type=float, default=0.0, help="initial guess")
-parser.add_argument("--niter", "-n", type=int, default=5, help="number of iterations")
+parser.add_argument("--guess", type=float, default=0.0, help="initial guess")
+parser.add_argument("--nmax", type=int, default=100, help="max number of iterations")
+parser.add_argument(
+    "--tol", type=float, default=1e-6, help="absolute convergence criterion"
+)
 parser.add_argument("--verbose", "-v", action="store_true")
 args = parser.parse_args()
 x_sym, f_sym = symparser.parse_single_variable_function(args.function)
@@ -23,14 +26,25 @@ if args.verbose:
     print(f"f'({x_sym}) = {fprime_sym}")
 
 guess = args.guess
-for i in range(args.niter):
-    if args.verbose:
-        print(f"i={i}, {x_sym}={guess}")
+if args.verbose:
+    print(f"Using {x_sym}={guess} as initial guess")
+i = 0
+while True:
     try:
         guess -= f(guess) / fprime(guess)
     except ZeroDivisionError as e:
         utils.exit_error(
             f"f({x_sym})/f'({x_sym})={f_sym}/{fprime_sym} results in division by zero at {x_sym}={guess}. Try different --guess"
+        )
+    tol = abs(f(guess))
+    if args.verbose:
+        print(f"i={i}, {x_sym}={guess}, tol={tol}")
+    if tol <= args.tol:
+        break
+    i += 1
+    if i == args.nmax:
+        utils.exit_error(
+            f"Failed to converge after {i} iterations. |f({x_sym}={guess})| = {tol} <= {args.tol}"
         )
 
 print(f"{x_sym} = {guess}")
