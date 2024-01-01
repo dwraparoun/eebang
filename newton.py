@@ -12,7 +12,7 @@ parser.add_argument(
 parser.add_argument("--guess", type=float, default=0.0, help="initial guess")
 parser.add_argument("--nmax", type=int, default=100, help="max number of iterations")
 parser.add_argument(
-    "--tol", type=float, default=1e-6, help="absolute convergence criterion"
+    "--tol", type=float, default=1e-6, help="absolute error of the root's value"
 )
 parser.add_argument("--verbose", "-v", action="store_true")
 args = parser.parse_args()
