@@ -1,3 +1,4 @@
+#!/usr/local/bin/python3
 import argparse
 import newton
 import plot
@@ -40,22 +41,23 @@ if __name__ == "__main__":
         default=0.0,
         help="point where Taylor expansion occurs (0 is Maclaurin)",
     )
-    taylor_parser.add_argument("-n", type=int, default=5, help="number of terms")
+    taylor_parser.add_argument("-n", type=int, default=2, help="number of terms")
 
     # Derivative
     derivative_parser = subparsers.add_parser("derivative")
     derivative_parser.add_argument(
         "function",
         type=str,
-        help="single variable function, e.g. 'x**3-7+sin(x)-1/exp(4*x)'",
+        help="single variable functions, e.g. 'x**3-7+sin(x)-1/exp(4*x)'",
     )
     derivative_parser.add_argument("-n", type=int, default=1, help="derivative order")
 
     # Plotter
     plot_parser = subparsers.add_parser("plot")
     plot_parser.add_argument(
-        "function",
+        "functions",
         type=str,
+        nargs="+",
         help="single variable function, e.g. 'x**3-7+sin(x)-1/exp(4*x)'",
     )
 
@@ -71,7 +73,7 @@ if __name__ == "__main__":
             )
         )
     elif args.cmd == "plot":
-        plot.plot(args.function)
+        plot.plot(args.functions)
     elif args.cmd == "derivative":
         print(
             derivative.derivative(
