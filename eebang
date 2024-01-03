@@ -60,6 +60,8 @@ if __name__ == "__main__":
         nargs="+",
         help="single variable function, e.g. 'x**3-7+sin(x)-1/exp(4*x)'",
     )
+    plot_parser.add_argument("-x", type=float, nargs=2)
+    # plot_parser.add_argument("-y", type=float, nargs=2)
 
     args = parser.parse_args()
     if args.cmd == "newton":
@@ -73,7 +75,11 @@ if __name__ == "__main__":
             )
         )
     elif args.cmd == "plot":
-        plot.plot(args.functions)
+        if args.x:
+            xmin, xmax = args.x
+            plot.plot(args.functions, xmin, xmax)
+        else:
+            plot.plot(args.functions)
     elif args.cmd == "derivative":
         print(
             derivative.derivative(
