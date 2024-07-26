@@ -4,6 +4,13 @@ import newton
 import plot
 import derivative
 import taylor
+import sys
+
+
+def exit_error(msg):
+    print(msg, file=sys.stderr)
+    sys.exit(1)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -61,30 +68,34 @@ if __name__ == "__main__":
         help="single variable function, e.g. 'x**3-7+sin(x)-1/exp(4*x)'",
     )
     plot_parser.add_argument("-x", type=float, nargs=2)
-    # plot_parser.add_argument("-y", type=float, nargs=2)
 
     args = parser.parse_args()
-    if args.cmd == "newton":
-        print(
-            newton.newton(
-                function=args.function,
-                guess=args.guess,
-                tol=args.tol,
-                nmax=args.nmax,
-                verbose=args.verbose,
+    try:
+        if args.cmd == "newton":
+            print(
+                newton.newton(
+                    function=args.function,
+                    guess=args.guess,
+                    tol=args.tol,
+                    nmax=args.nmax,
+                    verbose=args.verbose,
+                )
             )
-        )
-    elif args.cmd == "plot":
-        if args.x:
-            xmin, xmax = args.x
-            plot.plot(args.functions, xmin, xmax)
-        else:
-            plot.plot(args.functions)
-    elif args.cmd == "derivative":
-        print(
-            derivative.derivative(
-                function=args.function, order=args.n, verbose=args.verbose
+        elif args.cmd == "plot":
+            if args.x:
+                xmin, xmax = args.x
+                plot.plot(args.functions, xmin, xmax)
+            else:
+                plot.plot(args.functions)
+        elif args.cmd == "derivative":
+            print(
+                derivative.derivative(
+                    function=args.function, order=args.n, verbose=args.verbose
+                )
             )
-        )
-    elif args.cmd == "taylor":
-        print(taylor.taylor(function=args.function, point=args.point, nterms=args.n))
+        elif args.cmd == "taylor":
+            print(
+                taylor.taylor(function=args.function, point=args.point, nterms=args.n)
+            )
+    except Exception as e:
+        exit_error(str(e))

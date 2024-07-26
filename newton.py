@@ -1,6 +1,5 @@
 import symparser
 import sympy as sy
-import utils
 from typing import Optional
 
 
@@ -24,8 +23,8 @@ def newton(
     while True:
         try:
             guess -= f(guess) / fprime(guess)
-        except ZeroDivisionError as e:
-            utils.exit_error(
+        except ZeroDivisionError:
+            raise RuntimeError(
                 f"f({x_sym})/f'({x_sym})={f_sym}/{fprime_sym} results in division by zero at {x_sym}={guess}. Try different --guess"
             )
         curr_tol = abs(f(guess))
@@ -35,6 +34,6 @@ def newton(
             return guess
         i += 1
         if i == nmax:
-            utils.exit_error(
+            raise RuntimeError(
                 f"Failed to converge after {i} iterations. |f({x_sym}={guess})| = {curr_tol} <= {tol}"
             )

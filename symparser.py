@@ -1,7 +1,6 @@
 import ast
 import sympy as sy
 from typing import Optional
-import utils
 
 MATH_IDENTIFIERS = ("exp", "pi", "sin", "cos", "tan")
 
@@ -12,14 +11,13 @@ def parse_single_variable_function(
     return _parse_function(function, variable, True)
 
 
-# TODO derive an exception instead sys.exiting
 def _parse_function(
     function: str, variable: Optional[str] = None, is_single_variable: bool = False
 ):
     try:
         expr = ast.parse(function)
     except SyntaxError:
-        utils.exit_error(f"Invalid python syntax: {function}")
+        raise RuntimeError(f"Invalid python syntax: {function}")
     identifiers = []
     for node in ast.walk(expr):
         if type(node) is ast.Name:
@@ -28,16 +26,16 @@ def _parse_function(
             identifiers.append(node.id)
 
     if not identifiers:
-        utils.exit_error(f"{function} has no variables")
+        raise RuntimeError(f"{function} has no variables")
 
     if is_single_variable and len(identifiers) > 1:
-        utils.exit_error(
+        raise RuntimeError(
             f"Function of one variable expected. Got {', '.join(identifiers)}"
         )
 
     if variable:
         if variable not in identifiers:
-            utils.exit_error(f"{function} doesn't depend on {variable}")
+            raise RuntimeError(f"{function} doesn't depend on {variable}")
         var = variable
     else:
         # pick the first identifier as function variable
@@ -50,7 +48,7 @@ def _parse_function(
     try:
         f = sy.sympify(function)
     except TypeError as e:
-        utils.exit_error(
+        raise RuntimeError(
             f"Failed to convert {function} to a symbolic equation, likely due to a syntax error: {str(e)}"
         )
     return (
