@@ -19,8 +19,6 @@ def newton(
     if verbose:
         print(f"f({x_sym}) = {f_sym}")
         print(f"f'({x_sym}) = {fprime_sym}")
-
-    if verbose:
         print(f"Using {x_sym}={guess} as initial guess")
     i = 0
     while True:
