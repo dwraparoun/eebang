@@ -10,7 +10,7 @@ def plot(
 ):
     functions_sym = []
     for function in functions:
-        x_sym, f_sym = symparser.parse_single_variable_function(function)
+        x_sym, f_sym = symparser.parse_parameterless_function(function)
         functions_sym.append(f_sym)
     if xmin and xmax:
         p = sy.plotting.plot(*functions_sym, (x_sym, xmin, xmax))

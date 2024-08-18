@@ -10,7 +10,7 @@ def newton(
     nmax: Optional[int] = 50,
     verbose: bool = False,
 ):
-    x_sym, f_sym = symparser.parse_single_variable_function(function)
+    x_sym, f_sym = symparser.parse_parameterless_function(function)
     fprime_sym = f_sym.diff(x_sym)
     f = sy.lambdify(x_sym, f_sym, "numpy")
     fprime = sy.lambdify(x_sym, fprime_sym, "numpy")

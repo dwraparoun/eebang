@@ -42,13 +42,20 @@ if __name__ == "__main__":
         help="single variable function, e.g. 'x**3-7+sin(x)-1/exp(4*x)'",
     )
     taylor_parser.add_argument(
+        "--var",
+        type=str,
+        help="function variable (first encountered by default)",
+    )
+    taylor_parser.add_argument(
         "--point",
         "-p",
         type=float,
         default=0.0,
         help="point where Taylor expansion occurs (0 is Maclaurin)",
     )
-    taylor_parser.add_argument("-n", type=int, default=2, help="number of terms")
+    taylor_parser.add_argument(
+        "-n", type=int, default=2, help="number of terms (2 by default)"
+    )
 
     # Derivative
     derivative_parser = subparsers.add_parser("derivative")
@@ -56,6 +63,11 @@ if __name__ == "__main__":
         "function",
         type=str,
         help="single variable functions, e.g. 'x**3-7+sin(x)-1/exp(4*x)'",
+    )
+    derivative_parser.add_argument(
+        "--var",
+        type=str,
+        help="function variable (first encountered by default)",
     )
     derivative_parser.add_argument("-n", type=int, default=1, help="derivative order")
 
@@ -90,12 +102,20 @@ if __name__ == "__main__":
         elif args.cmd == "derivative":
             print(
                 derivative.derivative(
-                    function=args.function, order=args.n, verbose=args.verbose
+                    function=args.function,
+                    var=args.var,
+                    order=args.n,
+                    verbose=args.verbose,
                 )
             )
         elif args.cmd == "taylor":
             print(
-                taylor.taylor(function=args.function, point=args.point, nterms=args.n)
+                taylor.taylor(
+                    function=args.function,
+                    var=args.var,
+                    point=args.point,
+                    nterms=args.n,
+                )
             )
     except Exception as e:
         exit_error(str(e))

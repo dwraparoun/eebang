@@ -5,15 +5,15 @@ from typing import Optional
 MATH_IDENTIFIERS = ("exp", "pi", "sin", "cos", "tan")
 
 
-def parse_single_variable_function(
-    function: str, variable: Optional[str] = None, is_single_variable: bool = False
-):
-    return _parse_function(function, variable, True)
+def parse_function(function: str, variable: Optional[str] = None):
+    return _parse_function(function, variable)
 
 
-def _parse_function(
-    function: str, variable: Optional[str] = None, is_single_variable: bool = False
-):
+def parse_parameterless_function(function: str, variable: Optional[str] = None):
+    return _parse_function(function, variable, parameterless=True)
+
+
+def _parse_function(function: str, variable: Optional[str] = None, parameterless=False):
     try:
         expr = ast.parse(function)
     except SyntaxError:
@@ -28,11 +28,6 @@ def _parse_function(
     if not identifiers:
         raise RuntimeError(f"{function} has no variables")
 
-    if is_single_variable and len(identifiers) > 1:
-        raise RuntimeError(
-            f"Function of one variable expected. Got {', '.join(identifiers)}"
-        )
-
     if variable:
         if variable not in identifiers:
             raise RuntimeError(f"{function} doesn't depend on {variable}")
@@ -41,6 +36,18 @@ def _parse_function(
         # pick the first identifier as function variable
         var = identifiers[0]
 
+    if parameterless and len(identifiers) > 1:
+        # FIXME: identifiers aren't ordered as in the expression
+        # -> also fix argparse docstring, claiming 'first by default'
+
+        # parameters = [x for x in identifiers if x != var]
+        # print(var, parameters)
+        # raise RuntimeError(
+        #     f"Function without parameters expected. Got {', '.join(parameters)}"
+        # )
+        raise RuntimeError(
+            f"Function without parameters expected. Got {', '.join(identifiers)}"
+        )
     for ident in identifiers:
         # create sy.Symbol, including var
         exec(f"{ident} = sy.Symbol('{ident}')")
